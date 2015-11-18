@@ -5,14 +5,14 @@ import ctypes
 import locale
 import gettext
 
-#a few Windows locale constants
+#A few Windows locale constants
 LOCALE_SLANGUAGE=0x2
 LOCALE_SLANGDISPLAYNAME=0x6f
 
 curLang="en"
 
 def localeNameToWindowsLCID(localeName):
-	"""Retreave the Windows locale identifier (LCID) for the given locale name
+	"""Retrieve the Windows locale identifier (LCID) for the given locale name
 	@param localeName: a string of 2letterLanguage_2letterCountry or or just 2letterLanguage
 	@type localeName: string
 	@returns: a Windows LCID
@@ -65,13 +65,13 @@ def getLanguageDescription(language):
 	return desc
 
 def getAvailableLanguages():
-	"""generates a list of locale names, plus their full localized language and country names.
+	"""Generates a list of locale names, plus their full localized language and country names.
 	@rtype: list of tuples
 	"""
 	#Make a list of all the locales found in NVDA's locale dir
 	l=[x for x in os.listdir('locale') if not x.startswith('.')]
 	l=[x for x in l if os.path.isfile('locale/%s/LC_MESSAGES/nvda.mo'%x)]
-	#Make sure that en (english) is in the list as it may not have any locale files, but is default
+	#Make sure that en (English) is in the list as it may not have any locale files, but is default
 	if 'en' not in l:
 		l.append('en')
 		l.sort()
@@ -81,15 +81,15 @@ def getAvailableLanguages():
 		desc=getLanguageDescription(i)
 		label="%s, %s"%(desc,i) if desc else i
 		d.append(label)
-	#include a 'user default, windows' language, which just represents the default language for this user account
+	#Include a 'user default, Windows' language, which just represents the default language for this user account
 	l.append("Windows")
-	# Translators: the label for the Windows default NVDA interface language.
+	# Translators: The label for the Windows default NVDA interface language.
 	d.append(_("User default"))
 	#return a zipped up version of both the lists (a list with tuples of locale,label)
 	return zip(l,d)
 
 def makePgettext(translations):
-	"""Obtaina  pgettext function for use with a gettext translations instance.
+	"""Obtain a pgettext function for use with a gettext translations instance.
 	pgettext is used to support message contexts,
 	but Python 2.7's gettext module doesn't support this,
 	so NVDA must provide its own implementation.
@@ -116,7 +116,7 @@ def setLanguage(lang):
 				localeName=locale.windows_locale[windowsLCID]
 			except KeyError:
 				# #4203: some locale identifiers from Windows 8 don't exist in Python's list.
-				# Therefore use window' own function to get the locale name.
+				# Therefore use Windows' own function to get the locale name.
 				# Eventually this should probably be used all the time.
 				buf=ctypes.create_unicode_buffer(32)
 				try:
@@ -146,7 +146,7 @@ def setLanguage(lang):
 					locale.setlocale(locale.LC_ALL,lang.split('_')[0])
 				except:
 					pass
-			#Set the windows locale for this thread (NVDA core) to this locale.
+			#Set the Windows locale for this thread (NVDA core) to this locale.
 			LCID=localeNameToWindowsLCID(lang)
 			ctypes.windll.kernel32.SetThreadLocale(LCID)
 	except IOError:
@@ -160,9 +160,8 @@ def getLanguage():
 	return curLang
 
 def normalizeLanguage(lang):
-	"""
-	Normalizes a  language-dialect string  in to a standard form we can deal with.
-	Converts  any dash to underline, and makes sure that language is lowercase and dialect is upercase.
+	"""Normalizes a language-dialect string into a standard form we can deal with.
+	Converts any dash to underscore, and makes sure that language is lowercase and dialect is uppercase.
 	"""
 	lang=lang.replace('-','_')
 	ld=lang.split('_')
@@ -173,5 +172,3 @@ def normalizeLanguage(lang):
 	if len(ld)>=2:
 		ld[1]=ld[1].upper()
 	return "_".join(ld)
-
-
