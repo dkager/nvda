@@ -1,4 +1,5 @@
 import ctypes
+import ctypes.wintypes
 import IAccessibleHandler
 import speech
 import textInfos.offsets
@@ -64,18 +65,23 @@ class TextRangeStruct(ctypes.Structure):
 
 class ScintillaTextInfo(textInfos.offsets.OffsetsTextInfo):
 
-	def _getOffsetFromPoint(self,x,y):
+	def _getOffsetFromClientPoint(self,x,y):
+		# Used by _getLineOffsets to avoid conversion to/from screen coordinates.
 		return watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_POSITIONFROMPOINT,x,y)
 
+	def _getOffsetFromPoint(self,x,y):
+		p=ctypes.wintypes.POINT(x,y)
+		ctypes.windll.user32.ScreenToClient(self.obj.windowHandle,ctypes.byref(p))
+		return watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_POSITIONFROMPOINT,p.x,p.y)
+
 	def _getPointFromOffset(self,offset):
-		point=textInfos.Point(
-		watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_POINTXFROMPOSITION,None,offset),
-		watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_POINTYFROMPOSITION,None,offset)
-		)
-		if point.x and point.y:
-			return point
-		else:
+		x=watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_POINTXFROMPOSITION,None,offset)
+		y=watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_POINTYFROMPOSITION,None,offset)
+		if x is None or y is None:
 			raise NotImplementedError
+		p=ctypes.wintypes.POINT(x,y)
+		ctypes.windll.user32.ClientToScreen(self.obj.windowHandle,ctypes.byref(p))
+		return textInfos.Point(p.x,p.y)
 
 	def _getFormatFieldAndOffsets(self,offset,formatConfig,calculateOffsets=True):
 		style=watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_GETSTYLEAT,offset,0)
@@ -186,11 +192,11 @@ class ScintillaTextInfo(textInfos.offsets.OffsetsTextInfo):
 	def _getLineOffsets(self,offset):
 		if watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_GETWRAPMODE,None,None)!=SC_WRAP_NONE:
 			# Lines in Scintilla refer to document lines, not wrapped lines.
-			# There's no way to retrieve wrapped lines, so use screen coordinates.
+			# There's no way to retrieve wrapped lines, so use client coordinates.
 			y=watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_POINTYFROMPOSITION,None,offset)
 			top,left,width,height=self.obj.location
-			start = self._getOffsetFromPoint(0,y)
-			end=self._getOffsetFromPoint(width,y)
+			start=self._getOffsetFromClientPoint(0,y)
+			end=self._getOffsetFromClientPoint(width,y)
 			# If this line wraps to the next line,
 			# end is the first offset of the next line.
 			if watchdog.cancellableSendMessage(self.obj.windowHandle,SCI_POINTYFROMPOSITION,None,end)==y:
