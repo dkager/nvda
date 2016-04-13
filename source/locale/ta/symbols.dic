@@ -105,7 +105,7 @@ _	அடிக்கோடு	most
 ◦	வெள்ளைத் தோட்டா	some
 ➔	வலதம்பு	some
 §	பிரிவு	all
-°	degrees	some
+°	பாகை	some
 «	double left pointing angle bracket
 »	double right pointing angle bracket
 µ	micro	some
@@ -169,6 +169,7 @@ _	அடிக்கோடு	most
 ⊃	SUPERSET OF	none
 ⊆	SUBSET OF OR EQUAL TO	none
 ⊇	SUPERSET OF OR EQUAL TO	none
+π	பை	none
 
 # Special Tamil Characters
 ௰	பத்து	none

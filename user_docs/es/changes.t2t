@@ -3,7 +3,41 @@ Qué hay de Nuevo en NVDA
 
 %!includeconf: ../changes.t2tconf
 
+= 2016.2 =
+
+== Nuevas Características ==
+- En modo exploración en Internet Explorer y otros controles MSHTML, utilizando primero la navegación con una sola letra para mover por anotación (a y shift+a) ahora se mueve a texto insertado y eliminado. (#5691)
+- En Microsoft Excel, NVDA ahora anuncia el nivel de un grupo de celdas, así como si está contraído o expandido. (#5690)
+- Al pulsar la orden Anunciar formato de texto dos veces presenta la información en modo exploración para que se pueda revisar. (#4908)
+- En Microsoft Excel 2010 y posterior, el sombreado y el degradado de relleno de celda ahora se anuncia. El anunciado automático se controla por la opción Anunciar colores en las preferencias de Formateado de Documentos de NVDA. (#3683)
+- Nueva tabla de transcripción braille: Griego koiné. (#5393)
+- En el Visualizador de Registro, ahora puedes guardar el registro utilizando el atajo de teclado control+s. (#4532)
+
+ 
+== Cambios ==
+- En modo exploración y en campos de texto editables, NVDA ahora trata al intro del teclado numérico del mismo modo que la tecla intro principal. (#5385)
+- NVDA ha cambiado al sintetizador de voz eSpeak NG. (#5651)
+
+
+== Corrección de Fallos ==
+- En modo exploración, cuando se intenta utilizar la navegación con una sola letra para moverte a un elemento que no se soporta en el documento, NVDA anuncia que esto no se soporta en lugar de anunciar que no hay elemento en esa dirección. (#5691)
+- Cuando se listan hojas en la lista de elementos en Microsoft Excel, las hojas que contengan sólo gráficos ahora se incluyen. (#5698)
+- NVDA ya no anuncia información extraña cuando se cambie entre ventanas en una aplicación Java con múltiples ventanas tales como IntelliJ o Android Studio. (#5732)
+- En editores basados en Scintilla tales como Notepad++, el braille ahora se actualiza correctamente al mover el cursor utilizando una pantalla braille. (#5678)
+- NVDA ya no se cuelga a veces al habilitar la salida braille. (#4457)
+- En Microsoft Word, la sangría de párafo ahora siempre se anuncia en la unidad de medida elegida por el usuario (ej.: centímetros o pulgadas). (#5804)
+- Al utilizar una pantalla braille, muchos mensajes de NVDA que anteriormente sólo se verbalizaban ahora se braillifican también. (#5557)
+- En aplicaciones Java accesibles, el nivel de los elementos de la vista en árbol ahora se anuncia. (#5766)
+
+
+== Cambios para Desarrolladores ==
+- Los componentes c++ de NVDA ahora se compilan con Microsoft Visual Studio 2015. (#5592)
+- Ahora puedes presentar un texto o mensaje HTML al usuario en modo exploración utilizando ui.browseableMessage. (#4908)
+- En la Guía del Usuario, cuando se utiliza una orden %kc:setting para una opción que tiene una tecla común para todas las distribuciones, la tecla ahora podrá colocarse después de un dos puntos de ancho completo (：) así como los dos puntos regulares (:). (#5739)
+
+
 = 2016.1 =
+Lo reseñable de esta versión incluye la capacidad de bajar opcionalmente el volumen de otros sonidos; mejoras de la salida braille y del soporte de pantallas braille; varias correcciones significativas para el soporte de Microsoft Office; y correcciones al modo exploración en iTunes.
 
 == Nuevas Características ==
 - Nuevas tablas de transcripción braille: braille polaco computerizado de 8 puntos, mongol. (#5537), #5574) 
@@ -40,6 +74,15 @@ Qué hay de Nuevo en NVDA
 - El anunciado de la forma del ratón ahora funciona de nuevo como se esperaba. (#5595)
 - Al verbalizar el sangrado de línea, los espacios de no separación ahora son tratados como espacios normales. Anteriormente, esto podía causar anunciados tales como "espacio espacio espacio" en lugar de "3 espacios". (#5610)
 - Al cerrar una lista de métodos candidatos de entrada en Microsoft moderno, el foco se restaura correctamente o la composición de entrada o el documento subrayado. (#4145)
+- En Microsoft Office 2013 y posteriores, cuando las cintas están configuradas para mostrar sólo pestañas, los elementos en la cinta se muestran de nuevo como se esperaba cuando se activa una pestaña. (#5504)
+- Correcciones y mejoras para el enlazado y la detección de gestos de pantalla táctil. (#5652)
+- Los Touch screen hovers ya no se anuncian en ayuda de entrada. (#5652)
+- NVDA ya no falla al listar comentarios en la Lista de Elementos para Microsoft Excel si un comentario está sobre una celda fusionada. (#5704)
+- En un caso muy poco común, NVDA ya no falla al leer el contenido de la hoja en Microsoft Excel con el anunciado de encabezados de fila y columna habilitado. (#5705)
+- En Google Chrome, al navegar dentro de una Composición de Entrada cuando se introducen carácteres del Este Asiático ahora funciona como se esperaba. (#4080)
+- Cuando se busca en Apple Music en iTunes, el modo exploración para el documento de resultados de la búsqueda ahora se actualiza como se esperaba. (#5659)
+- En Microsoft Excel, pulsando shift+f11 para crear una hoja nueva ahora anuncia tu nueva posición en lugar de no anunciar nada. (#5689)
+- Corregidos problemas con la salida de la pantalla braille cuando se introducen carácteres coreanos. (#5640)
  
  
 == Cambios para Desarrolladores ==

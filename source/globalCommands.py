@@ -1141,7 +1141,7 @@ class GlobalCommands(ScriptableObject):
 	def script_moveToParentTreeInterceptor(self,gesture):
 		obj=api.getFocusObject()
 		parent=obj.parent
-		#Move up parents untill the tree interceptor of the parent is different to the tree interceptor of the object.
+		#Move up parents until the tree interceptor of the parent is different to the tree interceptor of the object.
 		#Note that this could include the situation where the parent has no tree interceptor but the object did.
 		while parent and parent.treeInterceptor==obj.treeInterceptor:
 			parent=parent.parent
@@ -1246,18 +1246,33 @@ class GlobalCommands(ScriptableObject):
 		for field in info.getTextWithFields(formatConfig):
 			if isinstance(field,textInfos.FieldCommand) and isinstance(field.field,textInfos.FormatField):
 				formatField.update(field.field)
-		text=speech.getFormatFieldSpeech(formatField,formatConfig=formatConfig) if formatField else None
-		if text:
-			textList.append(text)
 
-		if not textList:
+		repeats=scriptHandler.getLastScriptRepeatCount()
+		if repeats==0:
+			text=speech.getFormatFieldSpeech(formatField,formatConfig=formatConfig) if formatField else None
+			if text:
+				textList.append(text)
+
+			if not textList:
 			# Translators: Reported when trying to obtain formatting information (such as font name, indentation and so on) but there is no formatting information for the text under cursor.
-			ui.message(_("No formatting information"))
-			return
+				ui.message(_("No formatting information"))
+				return
+				
+			ui.message(" ".join(textList))
+		elif repeats==1:
+			text=speech.getFormatFieldSpeech(formatField,formatConfig=formatConfig , separator="\n") if formatField else None
+			if text:
+				textList.append(text)
 
-		ui.message(" ".join(textList))
+			if not textList:
+				# Translators: Reported when trying to obtain formatting information (such as font name, indentation and so on) but there is no formatting information for the text under cursor.
+				ui.message(_("No formatting information"))
+				return
+
+			# Translators: title for formatting information dialog.
+			ui.browseableMessage(("\n".join(textList) ) , _("Formatting"))
 	# Translators: Input help mode message for report formatting command.
-	script_reportFormatting.__doc__ = _("Reports formatting info for the current review cursor position within a document")
+	script_reportFormatting.__doc__ = _("Reports formatting info for the current review cursor position within a document. If pressed twice, presents the information in browse mode")
 	script_reportFormatting.category=SCRCAT_TEXTREVIEW
 
 	def script_reportCurrentFocus(self,gesture):
@@ -1829,13 +1844,13 @@ class GlobalCommands(ScriptableObject):
 
 
 	def script_touch_newExplore(self,gesture):
-		touchHandler.handler.screenExplorer.moveTo(gesture.tracker.x,gesture.tracker.y,new=True)
+		touchHandler.handler.screenExplorer.moveTo(gesture.x,gesture.y,new=True)
 	# Translators: Input help mode message for a touchscreen gesture.
 	script_touch_newExplore.__doc__=_("Reports the object and content directly under your finger")
 	script_touch_newExplore.category=SCRCAT_TOUCH
 
 	def script_touch_explore(self,gesture):
-		touchHandler.handler.screenExplorer.moveTo(gesture.tracker.x,gesture.tracker.y)
+		touchHandler.handler.screenExplorer.moveTo(gesture.x,gesture.y)
 	# Translators: Input help mode message for a touchscreen gesture.
 	script_touch_explore.__doc__=_("Reports the new object or content under your finger if different to where your finger was last")
 	script_touch_explore.category=SCRCAT_TOUCH

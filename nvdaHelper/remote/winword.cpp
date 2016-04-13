@@ -531,10 +531,6 @@ int generateTableXML(IDispatch* pDispatchRange, bool includeLayoutTables, int st
 
 void generateXMLAttribsForFormatting(IDispatch* pDispatchRange, int startOffset, int endOffset, int formatConfig, wostringstream& formatAttribsStream) {
 	int iVal=0;
-	// #4165: font size is needed to calculate paragraph indenting
-	if(formatConfig&formatConfig_reportParagraphIndentation) {
-		formatConfig|=formatConfig_reportFontSize;
-	}
 	if((formatConfig&formatConfig_reportPage)&&(_com_dispatch_raw_method(pDispatchRange,wdDISPID_RANGE_INFORMATION,DISPATCH_PROPERTYGET,VT_I4,&iVal,L"\x0003",wdActiveEndAdjustedPageNumber)==S_OK)&&iVal>0) {
 		formatAttribsStream<<L"page-number=\""<<iVal<<L"\" ";
 	}
@@ -1004,25 +1000,25 @@ LRESULT CALLBACK winword_callWndProcHook(int code, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-error_status_t nvdaInProcUtils_winword_expandToLine(handle_t bindingHandle, const long windowHandle, const int offset, int* lineStart, int* lineEnd) {
+error_status_t nvdaInProcUtils_winword_expandToLine(handle_t bindingHandle, const unsigned long windowHandle, const int offset, int* lineStart, int* lineEnd) {
 	winword_expandToLine_args args={offset,-1,-1};
 	DWORD_PTR wmRes=0;
-	SendMessage((HWND)windowHandle,wm_winword_expandToLine,(WPARAM)&args,0);
+	SendMessage((HWND)UlongToHandle(windowHandle),wm_winword_expandToLine,(WPARAM)&args,0);
 	*lineStart=args.lineStart;
 	*lineEnd=args.lineEnd;
 	return RPC_S_OK;
 }
 
-error_status_t nvdaInProcUtils_winword_getTextInRange(handle_t bindingHandle, const long windowHandle, const int startOffset, const int endOffset, const long formatConfig, BSTR* text) { 
+error_status_t nvdaInProcUtils_winword_getTextInRange(handle_t bindingHandle, const unsigned long windowHandle, const int startOffset, const int endOffset, const long formatConfig, BSTR* text) { 
 	winword_getTextInRange_args args={startOffset,endOffset,formatConfig,NULL};
-	SendMessage((HWND)windowHandle,wm_winword_getTextInRange,(WPARAM)&args,0);
+	SendMessage((HWND)UlongToHandle(windowHandle),wm_winword_getTextInRange,(WPARAM)&args,0);
 	*text=args.text;
 	return RPC_S_OK;
 }
 
-error_status_t nvdaInProcUtils_winword_moveByLine(handle_t bindingHandle, const long windowHandle, const int offset, const int moveBack, int* newOffset) {
+error_status_t nvdaInProcUtils_winword_moveByLine(handle_t bindingHandle, const unsigned long windowHandle, const int offset, const int moveBack, int* newOffset) {
 	winword_moveByLine_args args={offset,moveBack,NULL};
-	SendMessage((HWND)windowHandle,wm_winword_moveByLine,(WPARAM)&args,0);
+	SendMessage((HWND)UlongToHandle(windowHandle),wm_winword_moveByLine,(WPARAM)&args,0);
 	*newOffset=args.newOffset;
 	return RPC_S_OK;
 }
